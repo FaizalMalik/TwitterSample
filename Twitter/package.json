@@ -7,8 +7,12 @@
     "test": "jest"
   },
   "dependencies": {
+    "axios": "^0.18.0",
     "react": "16.8.3",
-    "react-native": "0.59.1"
+    "react-native": "0.59.1",
+    "react-native-gesture-handler": "~1.0.14",
+    "react-native-vector-icons": "^6.4.1",
+    "react-navigation": "^3.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.3.4",
