@@ -2,12 +2,13 @@ import React, { Component } from "react";
 import {SafeAreaView, Platform, StyleSheet, Text, View, Button, SectionList, Alert,TouchableOpacity } from "react-native";
 import Entypo from 'react-native-vector-icons/Entypo'
 import { Constants } from '../constants/Constants'
-
+import { connect } from 'react-redux';
+import {fetchApi} from '../actions/Category'
 const sectionAnimalData = [{ selected: false, item: "Cat" }, { selected: false, item: "Dog" }, { selected: false, item: "Rabbit" }]
 const sectionFruitsData = [{ selected: false, item: "Apple" }, { selected: false, item: "Orange" }, { selected: false, item: "Banana" }]
 const sectionSportsData = [{ selected: false, item: "Football" }, { selected: false, item: "Cricket" }, { selected: false, item: "BasketBall" }]
 
-export default class HomeActivity extends Component {
+class HomeActivity extends Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -134,6 +135,16 @@ class RowItem extends Component {
                 );
     }
   }
+
+
+  const mapDispatchToProps = dispatch => {
+    return {
+      fetchApi: (query) => {
+        dispatch(fetchApi(query))
+      }
+    }
+  }
+  export default  connect(null,mapDispatchToProps) (HomeActivity)
 
 const styles = StyleSheet.create({
   wrapper: {

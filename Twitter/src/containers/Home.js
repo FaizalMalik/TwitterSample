@@ -6,12 +6,13 @@ import Hamburger from 'react-native-vector-icons/Octicons'
 import axios from "axios"
 import { Constants } from '../constants/Constants'
 import Tweet from '../components/Tweet'
+import { connect } from 'react-redux';
 
 const NAVBAR_HEIGHT = Constants.NAVBAR_HEIGHT;
 const STATUS_BAR_HEIGHT = Constants.STATUS_BAR_HEIGHT;
 const AnimatedListView = Animated.createAnimatedComponent(ListView);
 
-export default class Home extends Component {
+ class Home extends Component {
 
 //Constructor
   constructor(props) {
@@ -23,6 +24,7 @@ export default class Home extends Component {
     const offsetAnim = new Animated.Value(0);
 
     this.state = {
+      query: '',
       dataSource: [],
       data: false,
       dataSource: [],
@@ -53,7 +55,7 @@ export default class Home extends Component {
   })
     /** Fetch tweets */
 
-    const url = Constants.BASE_URL+"?q=election,&result_type=popular";
+    const url = Constants.BASE_URL+"?q="+this.props.query+"&result_type=popular";
 
     axios.get(url,{headers:{'Authorization':Constants.AUTH_TOKEN,'Content-Type':'application/json'}})
     .then(response => {
@@ -125,7 +127,7 @@ export default class Home extends Component {
 
   }
 
-  render() {
+   render() {
     const { clampedScroll } = this.state;
 
     const navbarTranslate = clampedScroll.interpolate({
@@ -180,6 +182,16 @@ export default class Home extends Component {
     );
   }
 }
+const mapStateToProps = state => {
+  console.log("mapStateToProps--->",state)
+  
+  return {
+    
+    query : state.home.query
+  }
+}
+
+export default connect(mapStateToProps,null)(Home)
 
 const styles = StyleSheet.create({
   wrapper: {
