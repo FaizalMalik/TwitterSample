@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Animated, Image, Platform, StyleSheet, View, Text, ListView, ActivityIndicator, TouchableOpacity } from 'react-native';
+import {SafeAreaView, Animated, Image, Platform, StyleSheet, View, Text, ListView, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { DrawerActions} from 'react-navigation'
 import Hamburger from 'react-native-vector-icons/Octicons'
 
@@ -140,6 +140,8 @@ export default class Home extends Component {
     });
 
     return (
+      <SafeAreaView style={styles.wrapper}>
+
       <View style={[styles.fill, {backgroundColor:Constants.BASE_COLOR}]}>
 
       { this.state.data ? 
@@ -173,12 +175,17 @@ export default class Home extends Component {
           </Animated.Text>
           </Animated.View>
         </Animated.View>
-      </View>
+        </View>
+        </SafeAreaView>  
     );
   }
 }
 
 const styles = StyleSheet.create({
+  wrapper: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: Constants.NAVBAR_COLOR,
+},
   container: {
     flex: 1,
     justifyContent: 'center',

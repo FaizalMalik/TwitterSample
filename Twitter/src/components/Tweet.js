@@ -89,7 +89,9 @@ export default class Tweet extends React.Component {
                   <TouchableOpacity>
                   <Image
                     source={photo}
-                    style={styles.photo}/>
+                    style={styles.photo} />
+                  
+                  
                   </TouchableOpacity>
                 </View>
               </View>

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Platform, StyleSheet, Text, View, Button, SectionList, Alert,TouchableOpacity } from "react-native";
+import {SafeAreaView, Platform, StyleSheet, Text, View, Button, SectionList, Alert,TouchableOpacity } from "react-native";
 import Entypo from 'react-native-vector-icons/Entypo'
 import { Constants } from '../constants/Constants'
 
@@ -95,6 +95,7 @@ export default class HomeActivity extends Component {
 
   render() {
     return (
+      <SafeAreaView style={styles.wrapper}>
       <View style={styles.container}>
       <SectionList
        sections={[
@@ -107,7 +108,8 @@ export default class HomeActivity extends Component {
                 refreshing={this.state.refresh}         
        keyExtractor={ (item, index) => index }
      />
-      </View>
+        </View>
+        </SafeAreaView>  
     );
   }
 }
@@ -134,6 +136,10 @@ class RowItem extends Component {
   }
 
 const styles = StyleSheet.create({
+  wrapper: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: Constants.NAVBAR_COLOR,
+},
     container: {
       flex: 1,
       backgroundColor: 'rgb(27, 42, 51)',
