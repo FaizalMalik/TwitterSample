@@ -1,139 +1,180 @@
-import React from 'react'
-import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  TouchableOpacity,
-  ScrollView
-} from 'react-native'
-import {NavigationActions, DrawerActions} from 'react-navigation'
-
+import React, { Component } from "react";
+import { Platform, StyleSheet, Text, View, Button, SectionList, Alert,TouchableOpacity } from "react-native";
 import Entypo from 'react-native-vector-icons/Entypo'
-import Ionicons from 'react-native-vector-icons/Ionicons'
-import FontAwesome from 'react-native-vector-icons/FontAwesome'
+import { Constants } from '../constants/Constants'
 
+const sectionAnimalData = [{ selected: false, item: "Cat" }, { selected: false, item: "Dog" }, { selected: false, item: "Rabbit" }]
+const sectionFruitsData = [{ selected: false, item: "Apple" }, { selected: false, item: "Orange" }, { selected: false, item: "Banana" }]
+const sectionSportsData = [{ selected: false, item: "Football" }, { selected: false, item: "Cricket" }, { selected: false, item: "BasketBall" }]
 
-export default class DrawerContainer extends React.Component {
+export default class HomeActivity extends Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            isSectionAimalSelected: false,
+            isSectionFruitsSelected: false,
+            isSectionSportsSelected: false,
+            refresh:true
+        }
+}
 
+/* Function to select the category Item */
+    clickItem = (item) => {
+        item.item["selected"] = !item.item["selected"]
+        this.setState({
+            refresh: true
+        })
+
+       
+    }
+  /* Function to render row Item */
+
+    renderItem(item) {    
+        return (
+            <RowItem
+     
+                item={item}
+                onPressItem={this.clickItem.bind(this, item)}
+            />
+        );
+    }
+  /* Function to render section Header */
+
+    renderSectionsHeaders(section) {
+        
+        return (
+
+            <TouchableOpacity
+           onPress = {this.clickHeader.bind(this,section)}
+            style={[ styles.list, styles.firstList]}>
+            <View >
+                    <Text style={styles.headerTitle}> {section.section.title} </Text>
+                    <Entypo
+                style={styles.icon}
+                name={section.section.selected ? 'chevron-small-up' : 'chevron-small-down'}
+                size={25}
+                color={Constants.ICON_COLOR}/>      
+            </View>
+            </TouchableOpacity>
+
+        );
+    }
+  
+  /* on Click Header Action */
+
+    clickHeader (section) {
+        
+        switch (section.section.index) {
+           
+            case 0: {                
+                this.setState({
+                    isSectionAimalSelected: !this.state.isSectionAimalSelected
+                })
+            }
+             break;    
+            case 1: {
+                
+                this.setState({
+                    isSectionFruitsSelected: !this.state.isSectionFruitsSelected
+                })
+            }
+                break;    
+            case 2: {
+                
+                this.setState({
+                    isSectionSportsSelected: !this.state.isSectionSportsSelected
+                })
+            }
+            break;    
+            
+          default: 
+            break
+       }
+  }    
+  
 
   render() {
-    const {navigation} = this.props
     return (
       <View style={styles.container}>
-       
-        <ScrollView>
-          <TouchableOpacity
-            onPress={() => navigation.navigate('Profile')}
-            style={[ styles.list, styles.firstList]}>
-            <View>
-            <Entypo
-                style={styles.icon}
-                name='sports-club'
-                size={20}
-                color="rgb(136, 153, 166)"/>
-              <Text style={styles.text}> Animals </Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => this.props.navigation.navigate('Site')} style={styles.list}>
-            <View>
-              <Entypo
-                style={styles.icon}
-                name='sports-club'
-                size={20}
-                color="rgb(136, 153, 166)"/>
-              <Text style={styles.text}> Sports </Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => this.props.navigation.navigate('Site')} style={styles.list}>
-            <View>
-              <Entypo
-                style={styles.icon}
-                name='sports-club'
-                size={20}
-                color="rgb(136, 153, 166)"/>
-              <Text style={styles.text}> Politics </Text>
-            </View>
-          </TouchableOpacity>
-        </ScrollView>
+      <SectionList
+       sections={[
+         { title: 'Animals', selected:this.state.isSectionAimalSelected, index:0, data: this.state.isSectionAimalSelected?sectionAnimalData:[] },
+         { title: 'Fruits', selected:this.state.isSectionFruitsSelected,index:1, data: this.state.isSectionFruitsSelected?sectionFruitsData:[]},
+         { title: 'Sports',selected:this.state.isSectionSportsSelected, index:2, data: this.state.isSectionSportsSelected?sectionSportsData:[] }
+       ]}
+       renderSectionHeader={this.renderSectionsHeaders.bind(this)  }
+                renderItem={this.renderItem.bind(this)} 
+                refreshing={this.state.refresh}         
+       keyExtractor={ (item, index) => index }
+     />
       </View>
-    )
+    );
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'rgb(27, 42, 51)',
-    paddingTop: 0
-  },
-  list: {
-    padding: 10,
-    height: 60,
-    borderColor: 'red',
-    borderWidth: 0
-  },
-  text: {
-    position: "absolute",
-    left: "24%",
-    top: 10,
-    color: "white",
-    fontSize: 16
-  },
-  top:{
-    paddingBottom: 40,
-    paddingLeft: 30,
-    marginBottom:10
-  },
-  photo: {
-    width: 50,
-    height: 50,
-    borderRadius: 30,
-    marginTop: 20
-  },
-  userName:{
-    marginTop: 15,
-    color: "white",
-    fontWeight: "bold"
-  },
-  userHandle:{
-    marginTop: 15,
-    color: "rgb(136, 153, 166)",
-    fontWeight: "300"
-  },
-  followingCount:{
-    color: "white",
-    position: 'absolute',
-    left: 0,
-    top: 10,
-    fontWeight: "bold"
-  },
-  followingText:{
-    color: "rgb(136, 153, 166)",
-    fontWeight: "300"
-  },
-  followersCount:{
-    color: "white",
-    position: 'absolute',
-    right: 30,
-    top: 10,
-    fontWeight: "bold"
-  },
-  followersText:{
-    color: "rgb(136, 153, 166)",
-    fontWeight: "300"
-  },
-  firstList:{
-    marginTop: 0,
-    borderTopWidth: 0.3,
-    borderTopColor: 'black',
-    height: 60,
-    borderTopWidth: 0.3,
-    borderTopColor: 'black'
-  },
-  icon:{
-    position: "absolute",
-    left: 20,
-    top: 10
+class RowItem extends Component {
+    render(){
+      //render styles and components conditionally using this.props.selected ? _ : _
+      return (
+        <TouchableOpacity
+        onPress = {this.props.onPressItem}      
+          style={[styles.list, styles.firstList]} >
+        <View>
+        <Text style={styles.text}> {this.props.item.item["item"]} </Text>                        
+         <Entypo
+         style={styles.icon}
+         name= {'check' } 
+         size={this.props.item.item["selected"] ?  10:0 }
+         color={Constants.ICON_COLOR}/>  
+          </View>
+          </TouchableOpacity>
+        
+                );
+    }
   }
-})
+
+const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: 'rgb(27, 42, 51)',
+      paddingTop: 0
+    },
+    list: {
+      padding: 10,
+      height: 60,
+      borderColor: 'red',
+      borderWidth: 0
+    },
+    text: {
+      position: "absolute",
+      paddingLeft: 10,
+      top: 10,
+      color: "white",
+      fontSize: 16
+    },
+    headerTitle: {
+        position: "absolute",
+        paddingLeft: 10,
+        top: 10,
+        color: "white",
+        fontSize: 18
+      },
+    top:{
+      paddingBottom: 40,
+      paddingLeft: 30,
+      marginBottom:10
+    },
+    firstList:{
+      marginTop: 0,
+      borderTopWidth: 0.3,
+      borderTopColor: 'black',
+      height: 60,
+      borderTopWidth: 0.3,
+      borderTopColor: 'black'
+    },
+    icon:{
+      position: "absolute",
+      right: 20,
+      top: 10
+    }
+  })
