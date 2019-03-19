@@ -7,7 +7,7 @@ import axios from "axios"
 import { Constants } from '../constants/Constants'
 import Tweet from '../components/Tweet'
 import { connect } from 'react-redux';
-
+import {fetchTweets} from '../actions/Tweet'
 const NAVBAR_HEIGHT = Constants.NAVBAR_HEIGHT;
 const STATUS_BAR_HEIGHT = Constants.STATUS_BAR_HEIGHT;
 const AnimatedListView = Animated.createAnimatedComponent(ListView);
@@ -27,6 +27,7 @@ const AnimatedListView = Animated.createAnimatedComponent(ListView);
       query: '',
       dataSource: [],
       data: false,
+      loading : false,
       dataSource: [],
       scrollAnim,
       offsetAnim,
@@ -52,27 +53,31 @@ const AnimatedListView = Animated.createAnimatedComponent(ListView);
   componentDidMount() {
     let ds = new ListView.DataSource({
       rowHasChanged: (r1, r2) => r1 !== r2
-  })
+    })
+  
+    console.log("componentDidMount called--")
+    this.props.fetchTweets();
+
     /** Fetch tweets */
 
-    const url = Constants.BASE_URL+"?q="+this.props.query+"&result_type=popular";
+    // const url = Constants.BASE_URL+"?q="+this.props.query+"&result_type=popular";
 
-    axios.get(url,{headers:{'Authorization':Constants.AUTH_TOKEN,'Content-Type':'application/json'}})
-    .then(response => {
+    // axios.get(url,{headers:{'Authorization':Constants.AUTH_TOKEN,'Content-Type':'application/json'}})
+    // .then(response => {
       
-      return response
-    })
-    .then(json => {
+    //   return response
+    // })
+    // .then(json => {
       
       
-      const { statuses } = json.data
+    //   const { statuses } = json.data
       
-      this.setState({dataSource: ds.cloneWithRows(statuses), data: true})
+    //   this.setState({dataSource: ds.cloneWithRows(statuses), data: true})
       
-    })
-    .catch((error) => {
-        console.log(` ${error}`)
-    });
+    // })
+    // .catch((error) => {
+    //     console.log(` ${error}`)
+    // });
 
 
     this.state.scrollAnim.addListener(({ value }) => {
@@ -146,25 +151,27 @@ const AnimatedListView = Animated.createAnimatedComponent(ListView);
 
       <View style={[styles.fill, {backgroundColor:Constants.BASE_COLOR}]}>
 
-      { this.state.data ? 
-        <AnimatedListView
-          contentContainerStyle={styles.contentContainer}
-          dataSource={this.state.dataSource}
-          renderRow={this.renderRow.bind(this)}
-          scrollEventThrottle={1}
-          onMomentumScrollBegin={this._onMomentumScrollBegin}
-          onMomentumScrollEnd={this._onMomentumScrollEnd}
-          onScrollEndDrag={this._onScrollEndDrag}
-          onScroll={Animated.event(
-            [{ nativeEvent: { contentOffset: { y: this.state.scrollAnim } } }],
-            { useNativeDriver: true },
-          )}
-        />
+          {this.props.loading ? 
+      
+      <View style={[styles.container, styles.horizontal]}>                
+      <ActivityIndicator size="small" color={Constants.SPINNER_COLOR} />
+  </View> 
 
         :             
-        <View style={[styles.container, styles.horizontal]}>                
-            <ActivityIndicator size="small" color={Constants.SPINNER_COLOR} />
-        </View> 
+             
+        <AnimatedListView
+        contentContainerStyle={styles.contentContainer}
+        dataSource={this.props.dataSource}
+        renderRow={this.renderRow.bind(this)}
+        scrollEventThrottle={1}
+        onMomentumScrollBegin={this._onMomentumScrollBegin}
+        onMomentumScrollEnd={this._onMomentumScrollEnd}
+        onScrollEndDrag={this._onScrollEndDrag}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: this.state.scrollAnim } } }],
+          { useNativeDriver: true },
+        )}
+      />
     }
         <Animated.View style={[styles.navbar, { transform: [{ translateY: navbarTranslate }] }]}>
         <TouchableOpacity style={styles.avatar} onPress={this.toggleDrawer.bind(this)}>
@@ -184,14 +191,21 @@ const AnimatedListView = Animated.createAnimatedComponent(ListView);
 }
 const mapStateToProps = state => {
   console.log("mapStateToProps--->",state)
-  
+  let ds = new ListView.DataSource({
+    rowHasChanged: (r1, r2) => r1 !== r2
+  })
   return {
     
-    query : state.home.query
+    dataSource: ds.cloneWithRows(state.home.data) ,
+    loading : state.home.loading
   }
 }
 
-export default connect(mapStateToProps,null)(Home)
+const mapDispatchToProps = {
+  fetchTweets,
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(Home)
 
 const styles = StyleSheet.create({
   wrapper: {
