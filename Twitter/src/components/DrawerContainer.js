@@ -3,11 +3,12 @@ import {SafeAreaView, Platform, StyleSheet, Text, View, Button, SectionList, Ale
 import Entypo from 'react-native-vector-icons/Entypo'
 import { Constants } from '../constants/Constants'
 import { connect } from 'react-redux';
-import {fetchApi} from '../actions/Category'
+import {fetchTweets} from '../actions/Tweet'
+
 const sectionAnimalData = [{ selected: false, item: "Cat" }, { selected: false, item: "Dog" }, { selected: false, item: "Rabbit" }]
 const sectionFruitsData = [{ selected: false, item: "Apple" }, { selected: false, item: "Orange" }, { selected: false, item: "Banana" }]
 const sectionSportsData = [{ selected: false, item: "Football" }, { selected: false, item: "Cricket" }, { selected: false, item: "BasketBall" }]
-
+let queries = []
 class HomeActivity extends Component {
     constructor(props) {
         super(props)
@@ -15,19 +16,49 @@ class HomeActivity extends Component {
             isSectionAimalSelected: false,
             isSectionFruitsSelected: false,
             isSectionSportsSelected: false,
-            refresh:true
+          refresh: true,
+            
         }
 }
-
+  componentWillUnmount() {
+    console.log("componentWillUnmount");
+  }
+  componentDidMount() {
+    console.log("componentDidMount");
+    
+  }
 /* Function to select the category Item */
-    clickItem = (item) => {
+  clickItem = (item) => {
+    
         item.item["selected"] = !item.item["selected"]
         this.setState({
             refresh: true
         })
-
-       
+        
+    if (item.item["selected"] == true){
+      queries.push(item.item["item"])      
+    } else {
+      var index = queries.indexOf(item.item["item"]);
+      
+      queries.splice(index, 1);      
     }
+
+    //Need to replace this with the query of whole selected items 
+    if (queries.length == 0) {
+      
+      //if no quireis select the general
+      this.props.fetchTweets("election");
+      
+    } else {
+      
+      this.props.fetchTweets(item.item["item"]);
+      
+    }
+    
+  }
+  
+
+  
   /* Function to render row Item */
 
     renderItem(item) {    
@@ -137,12 +168,15 @@ class RowItem extends Component {
   }
 
 
-  const mapDispatchToProps = dispatch => {
-    return {
-      fetchApi: (query) => {
-        dispatch(fetchApi(query))
-      }
-    }
+  // const mapDispatchToProps = dispatch => {
+  //   return {
+  //     fetchApi: (query) => {
+  //       dispatch(fetchApi(query))
+  //     }
+  //   }
+  // }
+const mapDispatchToProps = {
+  fetchTweets
   }
   export default  connect(null,mapDispatchToProps) (HomeActivity)
 

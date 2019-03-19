@@ -254,9 +254,9 @@ const styles = StyleSheet.create({
   }
 });
 
-Tweet.propTypes = {
-  retweeted: PropTypes.string.isRequired
-};
+// Tweet.propTypes = {
+//   retweeted: PropTypes.string.isRequired
+// };
 Tweet.defaultProps = {
   retweeted: false,
   liked: false

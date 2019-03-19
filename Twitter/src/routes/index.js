@@ -14,6 +14,8 @@ import SplashScreen from '../containers/SplashScreen'
 import DrawerContainer from '../components/DrawerContainer'
 
 import Home from '../containers/Home'
+import { connect } from 'react-redux';
+import {fetchTweets} from '../actions/Tweet'
 
 const  AppStack = createDrawerNavigator(
   { 
@@ -25,7 +27,7 @@ const  AppStack = createDrawerNavigator(
   }
 );
 
-export default AppNavigator = SwitchNavigator(
+const AppNavigator = SwitchNavigator(
   {
     SplashLoading: SplashScreen,
     App: AppStack,
@@ -34,6 +36,44 @@ export default AppNavigator = SwitchNavigator(
     initialRouteName: 'SplashLoading',
   }
 );
+
+
+const defaultGetStateForAction = AppNavigator.router.getStateForAction;
+
+AppNavigator.router.getStateForAction = (action, state) => {
+ 
+  
+    if (action.type === 'Navigation/DRAWER_CLOSED' ) {
+      console.log('DrawerClose');
+      // fetchTweets()
+      // this.props.fetchTweets()
+    
+    }
+    return defaultGetStateForAction(action, state);
+};
+
+
+
+const mapDispatchToProps = {
+  fetchTweets,
+}
+
+class App extends React.Component {
+
+  render() {
+    console.log('renderApp ',this.props);
+    
+    return (
+      
+      <AppNavigator fetchTweets={this.props.fetchTweets}/>
+      
+    )
+
+
+  }
+}
+
+export default connect(null,mapDispatchToProps)(App);
 
 const styles = StyleSheet.create({
   container: {

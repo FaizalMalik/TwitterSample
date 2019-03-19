@@ -5,14 +5,14 @@ import { fetchData,fetchTweetsCompleted,fetchTweetsFailed} from '../actions/Cate
 import axios from "axios"
 
 // //Define your action creators that will be responsible for asynchronouse operatiosn 
-export const fetchTweets = () => {
+export const fetchTweets = (query) => {
     return dispatch => {
-        console.log("fetching tweets--")
         //Dispatch the fetchData action creator before retrieving to set our loading state to true.
         dispatch(fetchData(true));
+        
         //Then get the data.
 
-        const url = Constants.BASE_URL+"?q=election&result_type=popular";
+        const url = Constants.BASE_URL + "?q="+query+"&result_type=popular";
         
             axios.get(url,{headers:{'Authorization':Constants.AUTH_TOKEN,'Content-Type':'application/json'}})
             .then(response => {
@@ -21,12 +21,7 @@ export const fetchTweets = () => {
             })
             .then(json => {
               
-                console.log("fetching completed--",json)
-                
-            //   const { statuses } = json.data
-              
-            //   this.setState({dataSource: ds.cloneWithRows(statuses), data: true})
-               //Set the results to the people array.
+               //Set the results to the data array.
             dispatch(fetchTweetsCompleted(json.data.statuses));
             })
             .catch((error) => {

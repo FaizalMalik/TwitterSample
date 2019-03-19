@@ -55,30 +55,10 @@ const AnimatedListView = Animated.createAnimatedComponent(ListView);
       rowHasChanged: (r1, r2) => r1 !== r2
     })
   
-    console.log("componentDidMount called--")
-    this.props.fetchTweets();
+    
 
-    /** Fetch tweets */
-
-    // const url = Constants.BASE_URL+"?q="+this.props.query+"&result_type=popular";
-
-    // axios.get(url,{headers:{'Authorization':Constants.AUTH_TOKEN,'Content-Type':'application/json'}})
-    // .then(response => {
-      
-    //   return response
-    // })
-    // .then(json => {
-      
-      
-    //   const { statuses } = json.data
-      
-    //   this.setState({dataSource: ds.cloneWithRows(statuses), data: true})
-      
-    // })
-    // .catch((error) => {
-    //     console.log(` ${error}`)
-    // });
-
+    /** Fetch tweets general*/
+    this.props.fetchTweets("election");
 
     this.state.scrollAnim.addListener(({ value }) => {
       const diff = value - this._scrollValue;
@@ -190,7 +170,6 @@ const AnimatedListView = Animated.createAnimatedComponent(ListView);
   }
 }
 const mapStateToProps = state => {
-  console.log("mapStateToProps--->",state)
   let ds = new ListView.DataSource({
     rowHasChanged: (r1, r2) => r1 !== r2
   })
